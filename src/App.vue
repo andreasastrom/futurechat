@@ -1,15 +1,15 @@
 <template>
-  <ChatMessage
-    sender="Victor"
-    message="Hello there, this is a longer message, looking forward to lunch!"
-  />
+  <ChatContainer />
 </template>
 
 <script>
-import ChatMessage from "../src/components/ChatMessage.vue";
+import ChatContainer from "./components/ChatContainer.vue";
 
 export default {
-  components: { ChatMessage },
+  name: "App",
+  components: {
+    ChatContainer,
+  },
 };
 </script>
 
