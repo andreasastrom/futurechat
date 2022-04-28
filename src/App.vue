@@ -1,5 +1,5 @@
 <template>
-  <ChatContainer />
+  <ChatContainer :currSender="'Victor Olsson'" :currMessage="'Test Message'" />
 </template>
 
 <script>

@@ -1,25 +1,66 @@
 <template>
+  <p class="chat-title">Awesome Chat</p>
   <div class="chat-container">
     <div class="chat-window">
       <div class="message-field">
-        <div v-for="m in messages" :key="m">{{ m }}</div>
+        <ChatMessage
+          v-for="m in messages"
+          :key="m"
+          class="message"
+          :message="m.message"
+          :sender="m.sender"
+        />
       </div>
-      <slot></slot>
     </div>
   </div>
 </template>
 
 <script>
+import ChatMessage from "./ChatMessage.vue";
+
 export default {
   name: "ChatContainer",
-  props: ["messages"],
-  mounted: function () {
-    console.log(this.messages[0]);
+  data: () => ({
+    messages: [
+      {
+        sender: "Mr. Test",
+        message: "Test Message",
+      },
+    ],
+    wsUri: "ws://192.168.2.127:5002/ws",
+    ws: {},
+    currMessage: "Initial Message",
+  }),
+  props: ["currSender"],
+  components: {
+    ChatMessage,
+  },
+  watch: {
+    currMessage: {
+      handler() {
+        const inputMessage = {
+          sender: this.currSender,
+          message: this.currMessage,
+        };
+        this.messages.push(inputMessage);
+      },
+      immediate: true,
+    },
+  },
+  mounted: () => {
+    this.ws = new WebSocket(this.wsUri);
+    this.ws.onmessage = (event) => {
+      this.currMessage = event.data;
+    };
   },
 };
 </script>
 
 <style scoped>
+.chat-title {
+  color: green;
+}
+
 .chat-container {
   position: absolute;
   display: flex;
@@ -40,11 +81,16 @@ export default {
   border-radius: 10%;
 }
 .message-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
   background-color: white;
   height: 90%;
   margin-top: 1rem;
   width: 90%;
   border: ridge;
   border-radius: 10%;
+  overflow: scroll;
 }
 </style>
